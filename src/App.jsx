@@ -10,9 +10,10 @@ import MapCanvas from './components/map/MapCanvas';
 // Import Data & Utils
 import { DUMMY_ROUTES, DUMMY_POIS, ROUTE_LOOKUP } from './assets/data/mockData.jsx';
 import { fixLeafletIcon } from './utils/leafletHelpers';
-import LeftSidebar from './components/layout/leftSidebar.jsx';
-import RightSidebar from './components/layout/rightSidebar.jsx';
 import CustomDropdown from './components/ui/CostumDropdown.jsx';
+
+import leftSidebar from './components/layout/leftSidebar.jsx';
+import rightSidebar from './components/layout/rightSidebar.jsx';
 
 fixLeafletIcon();
 
@@ -95,7 +96,7 @@ const App = () => {
       <section className="h-screen w-full snap-start relative flex overflow-hidden">
         
         {/* SIDEBAR KIRI (Tetap di Section 1) */}
-        <LeftSidebar 
+        <leftSidebar
           routes={DUMMY_ROUTES} 
           selectedItem={selectedItem} 
           sidebarType={sidebarType} 
@@ -147,7 +148,7 @@ const App = () => {
 
         {/* SIDEBAR KANAN (Tetap di Section 1) */}
         {(selectedItem || (sidebarType === 'navigation' && searchResult)) && (
-            <RightSidebar 
+            <rightSidebar
               selectedItem={selectedItem}
               sidebarType={sidebarType}
               searchResult={searchResult}
