@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { X, ArrowRight, Bus, Building2, Map, ChevronUp, ChevronDown } from 'lucide-react';
 
-const rightSidebar = ({ 
+const RightSidebar = ({ 
     selectedItem, sidebarType, searchResult, pois, routes, 
     onClose, onRouteClick, onPoiClick, onZoomRequest 
 }) => {
@@ -131,4 +131,4 @@ const rightSidebar = ({
     );
 };
 
-export default rightSidebar;
+export default RightSidebar;

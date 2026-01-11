@@ -12,6 +12,8 @@ import tempLeft from './components/layout/leftSidebar.jsx';
 import { DUMMY_ROUTES, DUMMY_POIS, ROUTE_LOOKUP } from './assets/data/mockData.jsx';
 import { fixLeafletIcon } from './utils/leafletHelpers';
 import CustomDropdown from './components/ui/CostumDropdown.jsx';
+import LeftSidebar from './components/layout/leftSidebar.jsx';
+import RightSidebar from './components/layout/rightSidebar.jsx';
 
 
 fixLeafletIcon();
@@ -95,7 +97,7 @@ const App = () => {
       <section className="h-screen w-full snap-start relative flex overflow-hidden">
         
         {/* SIDEBAR KIRI (Tetap di Section 1) */}
-        <tempLeft
+        <LeftSidebar
           routes={DUMMY_ROUTES} 
           selectedItem={selectedItem} 
           sidebarType={sidebarType} 
@@ -147,7 +149,7 @@ const App = () => {
 
         {/* SIDEBAR KANAN (Tetap di Section 1) */}
         {(selectedItem || (sidebarType === 'navigation' && searchResult)) && (
-            <rightSidebar
+            <RightSidebar
               selectedItem={selectedItem}
               sidebarType={sidebarType}
               searchResult={searchResult}
