@@ -7,13 +7,12 @@ import 'leaflet/dist/leaflet.css';
 import Dashboard from './components/layout/Dashboard'; // Import Dashboard baru
 import MapCanvas from './components/map/MapCanvas';
 
-import tempLeft from './components/layout/leftSidebar.jsx';
 // Import Data & Utils
 import { DUMMY_ROUTES, DUMMY_POIS, ROUTE_LOOKUP } from './assets/data/mockData.jsx';
 import { fixLeafletIcon } from './utils/leafletHelpers';
 import CustomDropdown from './components/ui/CostumDropdown.jsx';
-import LeftSidebar from './components/layout/leftSidebar.jsx';
-import RightSidebar from './components/layout/rightSidebar.jsx';
+import LeftSidebar from './components/layout/LeftSidebar.jsx';
+import RightSidebar from './components/layout/RightSidebar.jsx';
 
 
 fixLeafletIcon();
