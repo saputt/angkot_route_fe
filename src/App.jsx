@@ -7,13 +7,12 @@ import 'leaflet/dist/leaflet.css';
 import Dashboard from './components/layout/Dashboard'; // Import Dashboard baru
 import MapCanvas from './components/map/MapCanvas';
 
+import tempLeft from './components/layout/leftSidebar.jsx';
 // Import Data & Utils
 import { DUMMY_ROUTES, DUMMY_POIS, ROUTE_LOOKUP } from './assets/data/mockData.jsx';
 import { fixLeafletIcon } from './utils/leafletHelpers';
 import CustomDropdown from './components/ui/CostumDropdown.jsx';
 
-import leftSidebar from './components/layout/leftSidebar.jsx';
-import rightSidebar from './components/layout/rightSidebar.jsx';
 
 fixLeafletIcon();
 
@@ -96,7 +95,7 @@ const App = () => {
       <section className="h-screen w-full snap-start relative flex overflow-hidden">
         
         {/* SIDEBAR KIRI (Tetap di Section 1) */}
-        <leftSidebar
+        <tempLeft
           routes={DUMMY_ROUTES} 
           selectedItem={selectedItem} 
           sidebarType={sidebarType} 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Bus } from 'lucide-react';
 
-const leftSidebar = ({ routes, selectedItem, sidebarType, onRouteClick }) => {
+const tempLeft = ({ routes, selectedItem, sidebarType, onRouteClick }) => {
   return (
     <aside className="w-80 h-full bg-white shadow-xl z-20 flex flex-col border-r border-gray-200 flex-shrink-0">
       <div className="p-6 border-b border-gray-100">
@@ -26,4 +26,4 @@ const leftSidebar = ({ routes, selectedItem, sidebarType, onRouteClick }) => {
   );
 };
 
-export default leftSidebar;
+export default tempLeft;
