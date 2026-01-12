@@ -1,0 +1,41 @@
+[
+    {
+        "id_angkot": 1,
+        "warna": "Hijau - Kuning",
+        "jurusan": "ABDUL MUIS - CICAHEUM",
+        "forward": {
+            "lintasan_jalan": [
+                "Jl. Stasiun Timur",
+                "Jl. Perintis Kemerdekaan",
+                "Jl. Wastu Kencana",
+                "Jl. R.E. Martadinata"
+            ],
+            "geometry": [
+                [-6.9147, 107.6016],
+                [-6.9150, 107.6050],
+                [-6.9200, 107.6100],
+                [-6.9250, 107.6365]
+            ]
+        },
+        "backward": {}
+    },
+    {
+        "id_angkot": 5,
+        "warna": "Biru",
+        "jurusan": "CICAHEUM - LEDENG",
+        "forward": {
+            "lintasan_jalan": [
+                "Jl. Cicaheum",
+                "Jl. Supratman",
+                "Jl. Diponegoro",
+                "Jl. Sukajadi"
+            ],
+            "geometry": [
+                [-6.9020, 107.6500],
+                [-6.9147, 107.6016],
+                [-6.8894, 107.5959]
+            ]
+        },
+        "backward": {}
+    }
+]

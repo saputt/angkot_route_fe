@@ -1,0 +1,14 @@
+{
+    "Stasiun Bandung (Hall)": {
+        "Paris Van Java (PVJ)": [5],
+        "Trans Studio Bandung": [1]
+    },
+    "Paris Van Java (PVJ)": {
+        "Stasiun Bandung (Hall)": [5],
+        "Trans Studio Bandung": []
+    },
+    "Trans Studio Bandung": {
+        "Stasiun Bandung (Hall)": [1],
+        "Paris Van Java (PVJ)": []
+    }
+}

@@ -1,148 +1,125 @@
 import React from 'react';
-import { ShoppingBag, GraduationCap, Stethoscope, Bus, Building2, MapPin } from 'lucide-react';
+import { ShoppingBag, GraduationCap, Stethoscope, Bus, Building2, MapPin, Activity, Train } from 'lucide-react';
 
 // ==============================================================================
-// BAGIAN 1: SIMULASI FILE JSON 1 (DATA ANGKOT)
-// Nanti ini diganti dengan import data_angkot_v2_FINAL.json
+// 1. IMPORT REAL JSON DATA
+// Pastikan nama file sesuai dengan yang ada di folder assets/data/
 // ==============================================================================
-export const RAW_ANGKOT_DATA = [
-  { 
-    id: 1, 
-    route_name: "01 | Abdul Muis - Kebon Kelapa", 
-    color_hex: "#22c55e",
-    description: "Rute utara ke selatan melewati balaikota.",
-    list_jalan: [
-        { name: "Jl. Merdeka", lat: -6.912, lng: 107.610 }, 
-        { name: "Jl. Asia Afrika", lat: -6.920, lng: 107.612 }
-    ],
-    geometry: [ // Array LatLng
-      [-6.912, 107.605], [-6.913, 107.606], [-6.914, 107.608], 
-      [-6.915, 107.610], [-6.916, 107.612], [-6.920, 107.612], 
-      [-6.922, 107.605]
-    ]
-  },
-  { 
-    id: 5, 
-    route_name: "05 | Cicaheum - Ledeng", 
-    color_hex: "#3b82f6",
-    description: "Rute panjang melewati PVJ dan UPI.",
-    list_jalan: [
-        { name: "Jl. Diponegoro", lat: -6.900, lng: 107.615 }, 
-        { name: "Jl. Sukajadi", lat: -6.895, lng: 107.598 }
-    ],
-    geometry: [
-      [-6.885, 107.595], [-6.890, 107.596], [-6.895, 107.598], 
-      [-6.900, 107.605], [-6.910, 107.610], [-6.914, 107.602], 
-      [-6.917, 107.619]
-    ]
-  },
-  { 
-    id: 15, 
-    route_name: "15 | Margahayu - Ledeng", 
-    color_hex: "#f97316",
-    description: "Melewati jalan Soekarno Hatta.",
-    list_jalan: [
-        { name: "Jl. Soekarno Hatta", lat: -6.945, lng: 107.650 }
-    ],
-    geometry: [
-      [-6.945, 107.650], [-6.940, 107.640], [-6.935, 107.630], 
-      [-6.930, 107.620], [-6.925, 107.615], [-6.906, 107.610], 
-      [-6.896, 107.598]
-    ]
-  },
-  { 
-    id: 17, 
-    route_name: "17 | Dago - Pasar Induk", 
-    color_hex: "#a855f7",
-    description: "Rute pasar.",
-    list_jalan: [
-        { name: "Jl. Ir H Djuanda", lat: -6.890, lng: 107.610 }
-    ],
-    geometry: [
-      [-6.890, 107.610], [-6.900, 107.608], [-6.914, 107.601]
-    ]
-  },
-];
+import RAW_ANGKOT from './data_angkot_v2_WITH_DISTANCE.json';
+import RAW_SOI from './soi_final.json';
+import RAW_LOOKUP from './rute_lookup.json';
 
 // ==============================================================================
-// BAGIAN 2: SIMULASI FILE JSON 2 (DATA SOI / TEMPAT)
-// Nanti ini diganti dengan import soi_final.json
-// Perhatikan: Tidak ada Icon Component di sini, hanya String "category"
+// 2. HELPER FUNCTIONS (UTILITIES)
 // ==============================================================================
-export const RAW_SOI_DATA = [
-  { id: 'pvj', name: 'Paris Van Java (PVJ)', lat: -6.8894, lng: 107.5959, category: 'Mall', passed_by_angkot: [5] },
-  { id: 'itb', name: 'Institut Teknologi Bandung', lat: -6.8915, lng: 107.6107, category: 'Kampus', passed_by_angkot: [5, 17] },
-  { id: 'rshs', name: 'RS Hasan Sadikin', lat: -6.8966, lng: 107.5978, category: 'Kesehatan', passed_by_angkot: [5, 15] },
-  { id: 'stasiun', name: 'Stasiun Bandung', lat: -6.9147, lng: 107.6016, category: 'Transportasi', passed_by_angkot: [1, 5, 17] },
-  { id: 'bec', name: 'Istana BEC', lat: -6.906, lng: 107.610, category: 'Mall', passed_by_angkot: [1, 15] },
-];
 
-// ==============================================================================
-// BAGIAN 3: SIMULASI FILE JSON 3 (LOOKUP TABLE / PRE-COMPUTED)
-// Nanti ini diganti dengan import rute_lookup.json
-// Format: { "ID_ASAL": { "ID_TUJUAN": [LIST_ANGKOT_YANG_BISA_DIPAKAI] } }
-// ==============================================================================
-export const RAW_LOOKUP_TABLE = {
-    "pvj": {
-        "itb": [5], // Dari PVJ ke ITB bisa naik 05
-        "rshs": [5],
-        "stasiun": [5],
-        "bec": [] // Kosong artinya tidak ada rute langsung (perlu transit)
-    },
-    "stasiun": {
-        "pvj": [5],
-        "itb": [5, 17], // Bisa naik 05 atau 17
-        "bec": [1]
-    },
-    "bec": {
-        "stasiun": [1],
-        "rshs": [15]
-    }
-    // ... dan seterusnya untuk semua kombinasi (hasil generate python kamu nanti)
+// Helper: Bikin ID Unik (Slug) dari Nama (Contoh: "Stasiun Bandung" -> "stasiun-bandung")
+const generateId = (name) => {
+    if (!name) return 'unknown';
+    return name.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 };
 
+// Helper: Mapping Warna Text ke Hex Code Modern
+const getColorFromText = (colorText) => {
+    const text = colorText ? colorText.toLowerCase() : '';
+    if (text.includes('hijau')) return '#22c55e'; // Green 500
+    if (text.includes('biru')) return '#3b82f6';  // Blue 500
+    if (text.includes('kuning')) return '#eab308'; // Yellow 500
+    if (text.includes('merah')) return '#ef4444';  // Red 500
+    if (text.includes('ungu')) return '#a855f7';   // Purple 500
+    if (text.includes('coklat') || text.includes('cokelat')) return '#92400e'; // Amber 800
+    if (text.includes('abu')) return '#6b7280';    // Gray 500
+    if (text.includes('hitam')) return '#1f2937';  // Gray 800
+    if (text.includes('pink')) return '#ec4899';   // Pink 500
+    if (text.includes('oranye') || text.includes('orange')) return '#f97316'; // Orange 500
+    return '#64748b'; // Default Slate 500
+};
 
-// ==============================================================================
-// BAGIAN 4: HELPER & EXPORT FINAL
-// Bagian ini bertugas "Menggabungkan" data mentah di atas agar siap dipakai App.jsx
-// ==============================================================================
-
-// Helper untuk mengubah String Kategori menjadi Icon React
+// Helper: Pilih Icon berdasarkan Kategori
 const getIconByCategory = (category) => {
     const props = { className: "w-4 h-4 text-white" };
-    switch (category) {
-        case 'Mall': return <ShoppingBag {...props} />;
-        case 'Kampus': return <GraduationCap {...props} />;
-        case 'Kesehatan': return <Stethoscope {...props} />;
-        case 'Transportasi': return <Bus {...props} />;
-        default: return <MapPin {...props} />;
-    }
+    // Normalisasi text kategori biar ga sensitif huruf besar/kecil
+    const cat = category ? category.toLowerCase() : '';
+
+    if (cat.includes('mall') || cat.includes('belanja') || cat.includes('pasar')) return <ShoppingBag {...props} />;
+    if (cat.includes('kampus') || cat.includes('sekolah') || cat.includes('pendidikan')) return <GraduationCap {...props} />;
+    if (cat.includes('sakit') || cat.includes('kesehatan') || cat.includes('rs')) return <Stethoscope {...props} />;
+    if (cat.includes('stasiun') || cat.includes('kereta')) return <Train {...props} />;
+    if (cat.includes('terminal') || cat.includes('transport')) return <Bus {...props} />;
+    if (cat.includes('simpang') || cat.includes('jalan')) return <Activity {...props} />;
+    
+    return <MapPin {...props} />;
 };
 
-// 1. Export Data POI yang sudah dipasangi Icon (Biar App.jsx ga error)
-export const DUMMY_POIS = RAW_SOI_DATA.map(poi => ({
-    ...poi,
-    icon: getIconByCategory(poi.category),
-    passed_by: poi.passed_by_angkot // Mapping nama field biar sesuai App.jsx
+
+// ==============================================================================
+// 3. ADAPTERS (MENGUBAH JSON ASLI -> FORMAT UI)
+// ==============================================================================
+
+// --- ADAPTER SOI (POIS) ---
+export const DUMMY_POIS = RAW_SOI.map((poi) => ({
+    id: generateId(poi.nama),       // Generate ID biar konsisten
+    name: poi.nama,
+    lat: poi.lat,
+    lng: poi.lng,
+    category: poi.kategori,
+    icon: getIconByCategory(poi.kategori),
+    passed_by: poi.id_angkot_lewat  // Array ID Angkot [1, 5, etc]
 }));
 
-// 2. Export Data Routes (Mapping nama field biar sesuai App.jsx)
-export const DUMMY_ROUTES = RAW_ANGKOT_DATA.map(r => ({
-    id: r.id,
-    name: r.route_name,
-    color: `border-[${r.color_hex}]`, // Hack Tailwind dynamic class (caution)
-    bg_color: "bg-gray-50",
-    text_color: "text-gray-700",
-    hexColor: r.color_hex,
-    detail: r.description,
-    streets: r.list_jalan,
-    coordinates: r.geometry,
-    // Kita ambil data passed_pois secara dinamis dari RAW_SOI_DATA
-    // (Logic ini nanti sebenernya tugas Python, tapi kita simulasi di sini)
-    passed_pois: RAW_SOI_DATA
-        .filter(poi => poi.passed_by_angkot.includes(r.id))
-        .map(poi => poi.id)
-}));
 
-// 3. Export Lookup Table
-export const ROUTE_LOOKUP = RAW_LOOKUP_TABLE;
+// --- ADAPTER ANGKOT (ROUTES) ---
+export const DUMMY_ROUTES = RAW_ANGKOT.map((angkot) => {
+    // Tentukan warna hex
+    const hexColor = getColorFromText(angkot.warna);
+    
+    // Ambil list jalan (string) dan ubah jadi object (karena UI butuh object)
+    // Cek apakah lintasan_jalan ada isinya
+    const streetsData = angkot.forward?.lintasan_jalan 
+        ? angkot.forward.lintasan_jalan.map(jalanName => ({ name: jalanName }))
+        : [];
+
+    return {
+        id: angkot.id_angkot,
+        name: `${angkot.id_angkot < 10 ? '0' + angkot.id_angkot : angkot.id_angkot} | ${angkot.jurusan}`, // Format: "05 | Cicaheum - Ledeng"
+        
+        // Styling
+        color: `border-[${hexColor}]`, // Note: Tailwind mungkin butuh safelist untuk dynamic class ini
+        bg_color: "bg-gray-50",
+        text_color: "text-gray-700",
+        hexColor: hexColor,
+        
+        detail: `Trayek rute ${angkot.jurusan} (${angkot.warna})`,
+        
+        // Geometry Map (Ambil dari forward geometry)
+        // Format di JSON: [[lat, lng], [lat, lng]] -> Leaflet aman
+        coordinates: angkot.forward?.geometry || [], 
+        
+        // List Nama Jalan
+        streets: streetsData,
+
+        // REVERSE LOOKUP: Cari POI mana saja yang dilewati angkot ini
+        // (Karena di JSON angkot ga ada list POI, kita cek dari DUMMY_POIS)
+        passed_pois: DUMMY_POIS
+            .filter(poi => poi.passed_by.includes(angkot.id_angkot))
+            .map(poi => poi.id)
+    };
+});
+
+
+// --- ADAPTER LOOKUP TABLE ---
+// Python Output Keys: "Nama Tempat Asli"
+// UI Requirement Keys: "id-tempat-slug"
+// Kita harus convert keys nya agar match dengan DUMMY_POIS.id
+export const ROUTE_LOOKUP = {};
+
+Object.keys(RAW_LOOKUP).forEach(asalName => {
+    const asalId = generateId(asalName);
+    ROUTE_LOOKUP[asalId] = {};
+
+    const tujuanObj = RAW_LOOKUP[asalName];
+    Object.keys(tujuanObj).forEach(tujuanName => {
+        const tujuanId = generateId(tujuanName);
+        ROUTE_LOOKUP[asalId][tujuanId] = tujuanObj[tujuanName];
+    });
+});

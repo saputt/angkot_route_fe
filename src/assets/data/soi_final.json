@@ -1,0 +1,23 @@
+[
+    {
+        "nama": "Stasiun Bandung (Hall)",
+        "lat": -6.9147,
+        "lng": 107.6016,
+        "kategori": "Transportasi",
+        "id_angkot_lewat": [1, 5]
+    },
+    {
+        "nama": "Paris Van Java (PVJ)",
+        "lat": -6.8894,
+        "lng": 107.5959,
+        "kategori": "Mall/Perbelanjaan",
+        "id_angkot_lewat": [5]
+    },
+    {
+        "nama": "Trans Studio Bandung",
+        "lat": -6.9250,
+        "lng": 107.6365,
+        "kategori": "Mall/Perbelanjaan",
+        "id_angkot_lewat": [1]
+    }
+]
